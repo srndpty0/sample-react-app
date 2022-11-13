@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   mysqldb:
+    platform: linux/amd64
     image: mysql:5.7
     restart: unless-stopped
     env_file: ./.env
@@ -15,10 +16,10 @@ services:
     networks:
       - backend
   
-  bezkoder-api:
+  api:
     depends_on:
       - mysqldb
-    build: ./bezkoder-api
+    build: ./api
     restart: unless-stopped
     env_file: ./.env
     ports:
@@ -34,11 +35,11 @@ services:
       - backend
       - frontend
 
-  bezkoder-ui:
+  ui:
     depends_on:
-      - bezkoder-api
+      - api
     build:
-      context: ./bezkoder-ui
+      context: ./ui
       args:
         - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
     ports:
